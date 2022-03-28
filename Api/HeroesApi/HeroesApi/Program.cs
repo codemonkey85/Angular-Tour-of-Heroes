@@ -10,13 +10,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-                      builder =>
-                      {
-                          // builder.WithOrigins("http://localhost:4200");
-                          builder.AllowAnyOrigin();
-                          builder.AllowAnyMethod();
-                          builder.AllowAnyHeader();
-                      });
+        builder =>
+            builder.AllowAnyOrigin()
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .WithMethods("GET", "PUT", "DELETE", "POST", "PATCH"));
 });
 
 var app = builder.Build();
@@ -56,16 +54,27 @@ Hero GetHero(int id)
     return heroes.FirstOrDefault(hero => hero.id == id);
 }
 
-void CreateHero(Hero hero)
+Hero CreateHero(Hero hero)
 {
+    var newHero = new Hero(
+         heroes.Max(h => h.id) + 1,
+         hero.name
+    );
+    heroes.Add(newHero);
+    return newHero;
 }
 
-void UpdateHero(Hero hero)
+Hero UpdateHero(Hero hero)
 {
+    var index = heroes.IndexOf(GetHero(hero.id));
+    heroes[index] = hero;
+    return hero;
 }
 
 void DeleteHero(int id)
 {
+    var hero = GetHero(id);
+    heroes.Remove(hero);
 }
 
 app.MapGet("/heroes", GetHeroes)
@@ -76,7 +85,7 @@ app.MapPost("/heroes", CreateHero)
     .WithName(nameof(CreateHero));
 app.MapPut("/heroes", UpdateHero)
     .WithName(nameof(UpdateHero));
-app.MapDelete("/heroes", DeleteHero)
+app.MapDelete("/heroes/{id}", DeleteHero)
     .WithName(nameof(DeleteHero));
 
 app.Run();
