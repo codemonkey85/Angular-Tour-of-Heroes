@@ -32,26 +32,52 @@ app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
 
-app.MapGet("/heroes", GetHeroes)
-    .WithName("GetHeroes");
-
-static Hero[] GetHeroes()
+var heroes = new List<Hero>
 {
-    Console.WriteLine("Gottem");
-    return new Hero[]
-    {
-        new Hero(11, "Dr Nice"),
-        new Hero(12, "Narco"),
-        new Hero(13, "Bombasto"),
-        new Hero(14, "Celeritas"),
-        new Hero(15, "Magneta"),
-        new Hero(16, "RubberMan"),
-        new Hero(17, "Dynama"),
-        new Hero(18, "Dr IQ"),
-        new Hero(19, "Magma"),
-        new Hero(20, "Tornado"),
-    };
+    new Hero(11, "Dr Nice"),
+    new Hero(12, "Narco"),
+    new Hero(13, "Bombasto"),
+    new Hero(14, "Celeritas"),
+    new Hero(15, "Magneta"),
+    new Hero(16, "RubberMan"),
+    new Hero(17, "Dynama"),
+    new Hero(18, "Dr IQ"),
+    new Hero(19, "Magma"),
+    new Hero(20, "Tornado"),
+};
+
+IEnumerable<Hero> GetHeroes()
+{
+    return heroes;
 }
+
+Hero GetHero(int id)
+{
+    return heroes.FirstOrDefault(hero => hero.id == id);
+}
+
+void CreateHero(Hero hero)
+{
+}
+
+void UpdateHero(Hero hero)
+{
+}
+
+void DeleteHero(int id)
+{
+}
+
+app.MapGet("/heroes", GetHeroes)
+    .WithName(nameof(GetHeroes));
+app.MapGet("/heroes/{id}", GetHero)
+    .WithName(nameof(GetHero));
+app.MapPost("/heroes", CreateHero)
+    .WithName(nameof(CreateHero));
+app.MapPut("/heroes", UpdateHero)
+    .WithName(nameof(UpdateHero));
+app.MapDelete("/heroes", DeleteHero)
+    .WithName(nameof(DeleteHero));
 
 app.Run();
 
