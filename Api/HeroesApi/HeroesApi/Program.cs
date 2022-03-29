@@ -2,8 +2,6 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -14,12 +12,11 @@ builder.Services.AddCors(options =>
             builder.AllowAnyOrigin()
                    .AllowAnyHeader()
                    .AllowAnyMethod()
-                   .WithMethods("GET", "PUT", "DELETE", "POST", "PATCH"));
+                   );
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -49,7 +46,7 @@ IEnumerable<Hero> GetHeroes()
     return heroes;
 }
 
-Hero GetHero(int id)
+Hero? GetHero(int id)
 {
     return heroes.FirstOrDefault(hero => hero.id == id);
 }
@@ -64,17 +61,25 @@ Hero CreateHero(Hero hero)
     return newHero;
 }
 
-Hero UpdateHero(Hero hero)
+Hero? UpdateHero(Hero hero)
 {
-    var index = heroes.IndexOf(GetHero(hero.id));
+    var foundHero = GetHero(hero.id);
+    if (foundHero is null)
+    {
+        return null;
+    }
+    var index = heroes.IndexOf(foundHero);
     heroes[index] = hero;
     return hero;
 }
 
 void DeleteHero(int id)
 {
-    var hero = GetHero(id);
-    heroes.Remove(hero);
+    var foundHero = GetHero(id);
+    if (foundHero is not null)
+    {
+        heroes.Remove(foundHero);
+    }
 }
 
 app.MapGet("/heroes", GetHeroes)
