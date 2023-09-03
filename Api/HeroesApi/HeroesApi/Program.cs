@@ -2,18 +2,15 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var services = builder.Services;
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-        builder =>
-            builder.AllowAnyOrigin()
-                   .AllowAnyHeader()
-                   .AllowAnyMethod()
-                   );
-});
+services
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen()
+
+    .AddCors(options => options.AddPolicy(
+        name: MyAllowSpecificOrigins,
+        builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
 var app = builder.Build();
 
@@ -41,21 +38,15 @@ var heroes = new List<Hero>
     new Hero(20, "Tornado"),
 };
 
-IEnumerable<Hero> GetHeroes()
-{
-    return heroes;
-}
+IEnumerable<Hero> GetHeroes() => heroes;
 
-Hero? GetHero(int id)
-{
-    return heroes.FirstOrDefault(hero => hero.id == id);
-}
+Hero? GetHero(int id) => heroes.FirstOrDefault(hero => hero.Id == id);
 
 Hero CreateHero(Hero hero)
 {
     var newHero = new Hero(
-         heroes.Max(h => h.id) + 1,
-         hero.name
+         heroes.Max(h => h.Id) + 1,
+         hero.Name
     );
     heroes.Add(newHero);
     return newHero;
@@ -63,7 +54,7 @@ Hero CreateHero(Hero hero)
 
 Hero? UpdateHero(Hero hero)
 {
-    var foundHero = GetHero(hero.id);
+    var foundHero = GetHero(hero.Id);
     if (foundHero is null)
     {
         return null;
@@ -82,17 +73,14 @@ void DeleteHero(int id)
     }
 }
 
-app.MapGet("/heroes", GetHeroes)
-    .WithName(nameof(GetHeroes));
-app.MapGet("/heroes/{id}", GetHero)
-    .WithName(nameof(GetHero));
-app.MapPost("/heroes", CreateHero)
-    .WithName(nameof(CreateHero));
-app.MapPut("/heroes", UpdateHero)
-    .WithName(nameof(UpdateHero));
-app.MapDelete("/heroes/{id}", DeleteHero)
-    .WithName(nameof(DeleteHero));
+var heroesApiGroup = app.MapGroup("/heroes");
+
+heroesApiGroup.MapGet("/", GetHeroes).WithName(nameof(GetHeroes));
+heroesApiGroup.MapGet("/{id}", GetHero).WithName(nameof(GetHero));
+heroesApiGroup.MapPost("/", CreateHero).WithName(nameof(CreateHero));
+heroesApiGroup.MapPut("/", UpdateHero).WithName(nameof(UpdateHero));
+heroesApiGroup.MapDelete("/{id}", DeleteHero).WithName(nameof(DeleteHero));
 
 app.Run();
 
-record Hero(int id, string name);
+internal record Hero(int Id, string Name);
