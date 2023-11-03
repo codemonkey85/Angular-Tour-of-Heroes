@@ -1,4 +1,4 @@
-﻿var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+﻿var myAllowSpecificOrigins = "myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +9,7 @@ services
     .AddSwaggerGen()
 
     .AddCors(options => options.AddPolicy(
-        name: MyAllowSpecificOrigins,
+        name: myAllowSpecificOrigins,
         builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
 var app = builder.Build();
@@ -22,20 +22,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors(myAllowSpecificOrigins);
 
 var heroes = new List<Hero>
 {
-    new Hero(11, "Dr Nice"),
-    new Hero(12, "Narco"),
-    new Hero(13, "Bombasto"),
-    new Hero(14, "Celeritas"),
-    new Hero(15, "Magneta"),
-    new Hero(16, "RubberMan"),
-    new Hero(17, "Dynama"),
-    new Hero(18, "Dr IQ"),
-    new Hero(19, "Magma"),
-    new Hero(20, "Tornado"),
+    new(11, "Dr Nice"),
+    new(12, "Narco"),
+    new(13, "Bombasto"),
+    new(14, "Celeritas"),
+    new(15, "Magneta"),
+    new(16, "RubberMan"),
+    new(17, "Dynama"),
+    new(18, "Dr IQ"),
+    new(19, "Magma"),
+    new(20, "Tornado"),
 };
 
 IEnumerable<Hero> GetHeroes() => heroes;
