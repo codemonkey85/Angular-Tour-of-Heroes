@@ -24,19 +24,19 @@ app.UseHttpsRedirection();
 
 app.UseCors(myAllowSpecificOrigins);
 
-var heroes = new List<Hero>
-{
-    new(11, "Dr Nice"),
-    new(12, "Narco"),
-    new(13, "Bombasto"),
-    new(14, "Celeritas"),
-    new(15, "Magneta"),
-    new(16, "RubberMan"),
-    new(17, "Dynama"),
-    new(18, "Dr IQ"),
-    new(19, "Magma"),
-    new(20, "Tornado"),
-};
+List<Hero> heroes =
+[
+    new(Id: 11, Name: "Dr Nice"),
+    new(Id: 12, Name: "Narco"),
+    new(Id: 13, Name: "Bombasto"),
+    new(Id: 14, Name: "Celeritas"),
+    new(Id: 15, Name: "Magneta"),
+    new(Id: 16, Name: "RubberMan"),
+    new(Id: 17, Name: "Dynama"),
+    new(Id: 18, Name: "Dr IQ"),
+    new(Id: 19, Name: "Magma"),
+    new(Id: 20, Name: "Tornado"),
+];
 
 IEnumerable<Hero> GetHeroes() => heroes;
 
